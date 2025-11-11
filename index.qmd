@@ -4,7 +4,7 @@ subtitle: "Blue Noise Stippling: Creating Art from Data"
 format:
   html: default
   pdf: default
-jupyter: 'bhdac.1'
+jupyter: 'bhdac1'
 execute:
   echo: true
   eval: true
