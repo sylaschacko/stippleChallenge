@@ -4,6 +4,7 @@ subtitle: "Blue Noise Stippling: Creating Art from Data"
 format:
   html: default
   pdf: default
+jupyter: 'bhdac.1'
 execute:
   echo: true
   eval: true
@@ -66,7 +67,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Load the image
-img_path = 'fleischhacker.jpg'
+img_path = 'chacko.jpeg'
 original_img = Image.open(img_path)
 
 # Convert to grayscale if needed
@@ -86,31 +87,6 @@ plt.show()
 
 print(f"Image shape: {img_array.shape}")
 print(f"Image size: {img_array.shape[0]}x{img_array.shape[1]} pixels")
-```
-
-### R
-
-```{r}
-#| label: load-image-r
-#| echo: true
-#| fig-cap: "Original image before stippling"
-
-library(imager)
-library(ggplot2)
-
-# Load the image
-img_path <- 'fleischhacker.jpg'
-original_img <- load.image(img_path)
-
-# Convert to grayscale if needed
-if(dim(original_img)[4] == 3) {
-  original_img <- grayscale(original_img)
-}
-
-# Display the original image
-plot(original_img, axes = FALSE, main = "Original Image")
-
-cat("Image dimensions:", dim(original_img)[1], "x", dim(original_img)[2], "pixels\n")
 ```
 
 :::
@@ -207,67 +183,6 @@ def compute_importance(
     if M > m: 
         importance = (importance - m) / (M - m)
     return importance
-```
-
-### R
-
-```{r}
-#| label: importance-map-r
-#| echo: true
-#| message: false
-#| warning: false
-
-compute_importance <- function(gray_img, 
-                                extreme_downweight = 0.5,
-                                extreme_threshold_low = 0.4,
-                                extreme_threshold_high = 0.8,
-                                extreme_sigma = 0.1,
-                                mid_tone_boost = 0.4,
-                                mid_tone_sigma = 0.2) {
-  # Clip image to [0, 1]
-  I <- pmax(pmin(gray_img, 1.0), 0.0)
-  
-  # Invert brightness
-  I_inverted <- 1.0 - I
-  
-  # Dark mask
-  dark_mask <- exp(-((I - 0.0)^2) / (2.0 * (extreme_sigma^2)))
-  dark_mask[I >= extreme_threshold_low] <- 0.0
-  if(max(dark_mask) > 0) {
-    dark_mask <- dark_mask / max(dark_mask)
-  }
-  
-  # Light mask
-  light_mask <- exp(-((I - 1.0)^2) / (2.0 * (extreme_sigma^2)))
-  light_mask[I <= extreme_threshold_high] <- 0.0
-  if(max(light_mask) > 0) {
-    light_mask <- light_mask / max(light_mask)
-  }
-  
-  # Combine masks
-  extreme_mask <- pmax(dark_mask, light_mask)
-  
-  # Apply downweighting
-  importance <- I_inverted * (1.0 - extreme_downweight * extreme_mask)
-  
-  # Mid-tone boost
-  mid_tone_center <- 0.65
-  mid_tone_gaussian <- exp(-((I - mid_tone_center)^2) / (2.0 * (mid_tone_sigma^2)))
-  if(max(mid_tone_gaussian) > 0) {
-    mid_tone_gaussian <- mid_tone_gaussian / max(mid_tone_gaussian)
-  }
-  
-  importance <- importance * (1.0 + mid_tone_boost * mid_tone_gaussian)
-  
-  # Normalize
-  m <- min(importance)
-  M <- max(importance)
-  if(M > m) {
-    importance <- (importance - m) / (M - m)
-  }
-  
-  return(importance)
-}
 ```
 
 :::
@@ -392,155 +307,6 @@ def void_and_cluster(
     return final_stipple, np.array(samples)
 ```
 
-### R
-
-```{r}
-#| label: stippling-functions-r
-#| echo: true
-#| message: false
-#| warning: false
-
-# Note: R implementation provided for completeness, but Python is strongly recommended
-# The R implementation may have issues with the circular shift that need debugging
-# If you encounter problems (e.g., tiling/repeating patterns), please use the Python version
-
-toroidal_gaussian_kernel <- function(h, w, sigma) {
-  y <- 0:(h-1)
-  x <- 0:(w-1)
-  
-  # Compute toroidal distances
-  dy <- pmin(y, h - y)
-  dx <- pmin(x, w - x)
-  
-  # Create distance matrices
-  dy_mat <- outer(dy, rep(1, w))
-  dx_mat <- outer(rep(1, h), dx)
-  
-  # Compute Gaussian
-  kern <- exp(-(dx_mat^2 + dy_mat^2) / (2.0 * sigma^2))
-  kern <- kern / sum(kern)  # Normalize
-  
-  return(kern)
-}
-
-void_and_cluster <- function(input_img, 
-                             percentage = 0.08,
-                             sigma = 0.9,
-                             content_bias = 0.9,
-                             importance_img = NULL,
-                             noise_scale_factor = 0.1) {
-  # Clip image to [0, 1]
-  I <- pmax(pmin(input_img, 1.0), 0.0)
-  h <- nrow(I)
-  w <- ncol(I)
-  
-  # Compute or use provided importance map
-  if(is.null(importance_img)) {
-    importance <- compute_importance(I)
-  } else {
-    importance <- pmax(pmin(importance_img, 1.0), 0.0)
-  }
-  
-  # Create toroidal Gaussian kernel for repulsion
-  kernel <- toroidal_gaussian_kernel(h, w, sigma)
-  
-  # Initialize energy field: lower energy → more likely to be picked
-  energy_current <- -importance * content_bias
-  
-  # Stipple buffer: start with white background; selected points become black dots
-  final_stipple <- matrix(1.0, nrow = h, ncol = w)
-  samples <- list()
-  
-  # Helper function to roll kernel to an arbitrary position
-  # This implements the equivalent of Python's np.roll(kernel, shift=y, axis=0) 
-  # followed by np.roll(kernel, shift=x, axis=1)
-  # Instead of rolling, we compute the toroidal distance directly for each position
-  energy_splat <- function(y, x) {
-    # Create a matrix of the same size as kernel
-    # For each position (i, j), compute the toroidal distance from (y, x)
-    # and use the kernel value at that distance
-    
-    # Create coordinate grids (1-indexed in R)
-    i_grid <- matrix(rep(1:h, each = w), nrow = h, ncol = w)
-    j_grid <- matrix(rep(1:w, times = h), nrow = h, ncol = w)
-    
-    # Convert to 0-indexed for distance calculation
-    i_0 <- i_grid - 1
-    j_0 <- j_grid - 1
-    y_0 <- y - 1  # Convert y to 0-indexed
-    x_0 <- x - 1  # Convert x to 0-indexed
-    
-    # Compute toroidal distances
-    dy <- pmin(abs(i_0 - y_0), h - abs(i_0 - y_0))
-    dx <- pmin(abs(j_0 - x_0), w - abs(j_0 - x_0))
-    
-    # The kernel is centered at (0,0) in 0-indexed coordinates
-    # So we need to find which kernel position corresponds to distance (dy, dx)
-    # The kernel position is (dy, dx) in 0-indexed
-    # Convert back to 1-indexed for R indexing
-    kern_i <- dy + 1
-    kern_j <- dx + 1
-    
-    # Extract kernel values at these positions
-    # Use matrix indexing: kernel[kern_i, kern_j] but need to handle vectorized indexing
-    kern_rolled <- matrix(kernel[cbind(as.vector(kern_i), as.vector(kern_j))], 
-                         nrow = h, ncol = w)
-    
-    return(kern_rolled)
-  }
-  
-  # Number of points to select
-  num_points <- as.integer(length(I) * percentage)
-  
-  # Choose first point near center with minimal energy
-  cy <- as.integer(h / 2)
-  cx <- as.integer(w / 2)
-  r <- min(20, as.integer(h / 10), as.integer(w / 10))
-  y_start <- max(1, cy - r)
-  y_end <- min(h, cy + r)
-  x_start <- max(1, cx - r)
-  x_end <- min(w, cx + r)
-  
-  region <- energy_current[y_start:y_end, x_start:x_end]
-  flat_idx <- which.min(region)
-  y0 <- ((flat_idx - 1) %/% ncol(region)) + y_start
-  x0 <- ((flat_idx - 1) %% ncol(region)) + x_start
-  
-  # Place first point
-  energy_current <- energy_current + energy_splat(y0, x0)
-  energy_current[y0, x0] <- Inf  # Prevent reselection
-  samples[[1]] <- c(y0, x0, I[y0, x0])
-  final_stipple[y0, x0] <- 0.0  # Black dot
-  
-  # Iteratively place remaining points
-  for(i in 2:num_points) {
-    # Add exploration noise that decreases over time
-    exploration <- 1.0 - ((i - 1) / num_points) * 0.5  # Decrease from 1.0 to 0.5
-    noise <- matrix(rnorm(h * w, 0, noise_scale_factor * content_bias * exploration), 
-                    nrow = h, ncol = w)
-    energy_with_noise <- energy_current + noise
-    
-    # Find position with minimum energy (with noise for exploration)
-    pos_flat <- which.min(energy_with_noise)
-    y <- ((pos_flat - 1) %/% w) + 1
-    x <- ((pos_flat - 1) %% w) + 1
-    
-    # Add Gaussian splat to prevent nearby points from being selected
-    energy_current <- energy_current + energy_splat(y, x)
-    energy_current[y, x] <- Inf  # Prevent reselection
-    
-    # Record the sample
-    samples[[i]] <- c(y, x, I[y, x])
-    final_stipple[y, x] <- 0.0  # Black dot
-  }
-  
-  # Convert samples list to matrix
-  samples_matrix <- do.call(rbind, samples)
-  
-  return(list(stipple = final_stipple, samples = samples_matrix))
-}
-```
-
 :::
 
 ## Preparing the Working Image
@@ -591,37 +357,6 @@ importance_map = compute_importance(
 print("Importance map computed")
 ```
 
-### R
-
-```{r}
-#| label: prep-image-r
-#| echo: true
-#| message: false
-#| warning: false
-
-# Resize image if needed
-max_size <- 512
-img_dims <- dim(original_img)
-if(img_dims[1] > max_size || img_dims[2] > max_size) {
-  scale <- max_size / max(img_dims[1], img_dims[2])
-  new_size <- c(round(img_dims[1] * scale), round(img_dims[2] * scale))
-  img_resized <- resize(original_img, new_size[1], new_size[2])
-  cat("Resized image to", new_size[1], "x", new_size[2], "for processing\n")
-} else {
-  img_resized <- original_img
-}
-
-# Convert to matrix and normalize
-img_matrix <- as.matrix(img_resized)
-img_matrix <- img_matrix / max(img_matrix)
-
-cat("Final image shape:", dim(img_matrix)[1], "x", dim(img_matrix)[2], "\n")
-
-# Compute importance map
-importance_map <- compute_importance(img_matrix)
-cat("Importance map computed\n")
-```
-
 :::
 
 ## Generating the Stippled Image
@@ -653,31 +388,6 @@ print(f"Generated {len(samples)} stipple points")
 print(f"Stipple pattern shape: {stipple_pattern.shape}")
 ```
 
-### R
-
-```{r}
-#| label: generate-stipple-r
-#| echo: true
-#| message: false
-#| warning: false
-
-# Generate stippling pattern
-cat("Generating blue noise stippling pattern...\n")
-stipple_result <- void_and_cluster(
-  img_matrix,
-  percentage = 0.08,
-  sigma = 0.9,
-  content_bias = 0.9,
-  importance_img = importance_map,
-  noise_scale_factor = 0.1
-)
-
-stipple_pattern <- stipple_result$stipple
-samples <- stipple_result$samples
-
-cat("Generated", nrow(samples), "stipple points\n")
-cat("Stipple pattern shape:", nrow(stipple_pattern), "x", ncol(stipple_pattern), "\n")
-```
 
 :::
 
@@ -717,21 +427,6 @@ plt.tight_layout()
 plt.show()
 ```
 
-### R
-
-```{r}
-#| label: display-results-r
-#| echo: true
-#| fig-cap: "Comparison of original image, importance map, and blue noise stippling"
-#| fig-width: 7
-#| fig-height: 4
-
-par(mfrow = c(1, 3), mar = c(2, 2, 2, 2))
-
-plot(img_resized, axes = FALSE, main = "Original Image")
-plot(as.cimg(importance_map), axes = FALSE, main = "Importance Map")
-plot(as.cimg(stipple_pattern), axes = FALSE, main = "Blue Noise Stippling")
-```
 
 :::
 
@@ -788,51 +483,6 @@ print(f"Generated {len(frames)} frames")
 print(f"Point counts: {point_counts}")
 ```
 
-### R
-
-```{r}
-#| label: progressive-stippling-r
-#| echo: true
-#| message: false
-#| warning: false
-
-# Use the existing samples from the already-computed stippling
-cat("Using existing stippling with", nrow(samples), "points\n")
-cat("Image shape:", nrow(img_matrix), "x", ncol(img_matrix), "\n")
-
-# Create progressive frames by adding points sequentially
-frame_increment <- 100
-frames <- list()
-point_counts <- c()
-
-# Start with white background
-progressive_stipple <- matrix(1.0, nrow = nrow(img_matrix), ncol = ncol(img_matrix))
-
-# Add first point and save initial frame
-if(nrow(samples) > 0) {
-  y0 <- as.integer(samples[1, 1])
-  x0 <- as.integer(samples[1, 2])
-  progressive_stipple[y0, x0] <- 0.0
-  frames[[1]] <- progressive_stipple
-  point_counts <- c(point_counts, 1)
-}
-
-# Add remaining points sequentially and save frames at increments
-for(i in 2:nrow(samples)) {
-  y <- as.integer(samples[i, 1])
-  x <- as.integer(samples[i, 2])
-  progressive_stipple[y, x] <- 0.0  # Add black dot
-  
-  # Save frame at increments (100, 200, 300, ...) and at the end
-  if(i %% frame_increment == 0 || i == nrow(samples)) {
-    frames[[length(frames) + 1]] <- progressive_stipple
-    point_counts <- c(point_counts, i)
-  }
-}
-
-cat("Generated", length(frames), "frames\n")
-cat("Point counts:", paste(point_counts, collapse = ", "), "\n")
-```
 
 :::
 
@@ -872,43 +522,6 @@ print(f"Total frames: {len(frames)}")
 print(f"Point counts: {point_counts}")
 ```
 
-### R
-
-```{r}
-#| label: create-gif-r
-#| include: false
-#| message: false
-#| warning: false
-
-# Create GIF animation using magick package
-library(magick)
-
-cat("Creating GIF animation...\n")
-
-# Create list of image frames
-img_list <- lapply(1:length(frames), function(i) {
-  frame <- frames[[i]]
-  # Convert matrix to image using imager
-  img <- as.cimg(frame)
-  # Add title using magick (convert from imager first)
-  img_magick <- image_read(as.raster(img))
-  img_magick <- image_annotate(img_magick, 
-                               paste("Progressive Stippling:", 
-                                     point_counts[i], 
-                                     "points"),
-                               size = 20, color = "black", gravity = "north")
-  return(img_magick)
-})
-
-# Combine frames into animated GIF
-gif <- image_animate(image_join(img_list), fps = 2)
-gif_path <- "progressive_stippling.gif"
-image_write(gif, gif_path)
-
-cat("GIF saved to:", gif_path, "\n")
-cat("Total frames:", length(frames), "\n")
-cat("Point counts:", paste(point_counts, collapse = ", "), "\n")
-```
 
 :::
 
