@@ -2,8 +2,9 @@
 title: "Selection Bias & Missing Data Challenge - Part 1"
 subtitle: "Blue Noise Stippling: Creating Art from Data"
 format:
-  html: default
-  pdf: default
+  html:
+    code-fold: true
+    echo: false
 jupyter: 'bhdac1'
 execute:
   echo: false

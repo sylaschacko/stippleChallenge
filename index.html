@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-<head>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.21">
 
-<meta charset="utf-8" />
-<meta name="generator" content="quarto-1.8.21" />
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Selection Bias &amp; Missing Data Challenge - Part 1</title>
@@ -24,16 +22,27 @@ ul.task-list li input[type="checkbox"] {
 }
 </style>
 
-<!-- htmldependencies:E3FAD763 -->
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="index_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="index_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-ea1d7ac60288e0f1efdbc993fd8432ae.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
 
-<body>
+<body class="fullcontent quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-</div>
+
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -61,7 +70,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class='callout-icon'></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Important</span>📊 Challenge Requirements
@@ -73,14 +82,14 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <section id="the-problem-can-algorithms-create-art" class="level2">
-<h2>The Problem: Can Algorithms Create Art?</h2>
+<h2 class="anchored" data-anchor-id="the-problem-can-algorithms-create-art">The Problem: Can Algorithms Create Art?</h2>
 <p><strong>Core Question:</strong> How can we convert a photograph into an aesthetically pleasing pattern of dots that preserves the visual information of the original image?</p>
 <p><strong>The Challenge:</strong> Blue noise stippling is a technique that converts images into patterns of dots (stipples) using algorithms that balance visual accuracy with spatial distribution. This challenge asks you to implement a modified “void and cluster” algorithm that combines importance sampling with blue noise distribution properties to create stippling patterns that are both visually accurate and spatially well-distributed.</p>
 <p><strong>Our Approach:</strong> We’ll use a modified void-and-cluster algorithm that: 1. Creates an importance map identifying visually important regions 2. Uses a toroidal (periodic) Gaussian kernel for repulsion to ensure blue noise properties 3. Iteratively selects points with minimum energy 4. Balances image content importance with blue noise spatial distribution</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class='callout-icon'></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Warning</span>⚠️ AI Partnership Required
@@ -93,22 +102,22 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </section>
 <section id="introduction-to-blue-noise-stippling" class="level2">
-<h2>Introduction to Blue Noise Stippling</h2>
+<h2 class="anchored" data-anchor-id="introduction-to-blue-noise-stippling">Introduction to Blue Noise Stippling</h2>
 <p>Blue noise stippling is a technique for converting images into a pattern of dots (stipples) that preserves the visual information of the original image while creating an aesthetically pleasing, evenly distributed pattern. This method follows the approach described by <a href="https://bartwronski.com/2022/08/31/progressive-image-stippling-and-greedy-blue-noise-importance-sampling/">Bart Wronski</a>.</p>
 <p>The method uses a modified “void and cluster” algorithm that combines importance sampling with blue noise distribution properties to create stippling patterns that are both visually accurate and spatially well-distributed. This version uses <strong>smooth extreme downweighting</strong> that selectively downweights very dark and very light tones while preserving mid-tones, creating a more balanced distribution of stipples across the image.</p>
 </section>
 <section id="loading-the-original-image" class="level2">
-<h2>Loading the Original Image</h2>
+<h2 class="anchored" data-anchor-id="loading-the-original-image">Loading the Original Image</h2>
 <p>First, let’s load an image that we’ll convert to a blue noise stippling pattern. You can use any image you’d like, but we’ll demonstrate with the provided example.</p>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Python</a></li></ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div id="cell-load-image" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
-<div id="load-image" class="quarto-figure quarto-figure-center">
-<figure>
-<p><img src="index_files/figure-html/load-image-output-1.png" width="588" height="473" /></p>
+<div id="load-image" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/load-image-output-1.png" width="588" height="473" class="figure-img"></p>
 <figcaption>Original image before stippling</figcaption>
 </figure>
 </div>
@@ -123,7 +132,7 @@ Image size: 1488x1984 pixels</code></pre>
 </div>
 </section>
 <section id="importance-mapping" class="level2">
-<h2>Importance Mapping</h2>
+<h2 class="anchored" data-anchor-id="importance-mapping">Importance Mapping</h2>
 <p>Before applying the stippling algorithm, we create an <strong>importance map</strong> that identifies which regions of the image should receive more stipples. The importance map is computed by:</p>
 <ul>
 <li><strong>Brightness inversion</strong>: The image brightness is inverted so that dark areas receive higher importance and thus more dots, while light areas receive fewer dots</li>
@@ -131,8 +140,8 @@ Image size: 1488x1984 pixels</code></pre>
 <li><strong>Mid-tone boost</strong>: A smooth Gaussian function centered on mid-tones provides a gradual increase in importance for mid-tone regions, ensuring they receive appropriate stippling density</li>
 <li><strong>Selective and effective</strong>: This approach ensures that stipples are distributed appropriately (more dots in dark areas and mid-tones, fewer in extreme dark/light areas) while maintaining good spatial distribution</li>
 </ul>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Python</a></li></ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 
@@ -141,7 +150,7 @@ Image size: 1488x1984 pixels</code></pre>
 </div>
 </section>
 <section id="blue-noise-stippling-algorithm" class="level2">
-<h2>Blue Noise Stippling Algorithm</h2>
+<h2 class="anchored" data-anchor-id="blue-noise-stippling-algorithm">Blue Noise Stippling Algorithm</h2>
 <p>The stippling algorithm uses a modified void-and-cluster approach that:</p>
 <ol type="1">
 <li>Creates an importance map that identifies visually important regions</li>
@@ -151,8 +160,8 @@ Image size: 1488x1984 pixels</code></pre>
 <li>Adds Gaussian “splats” around selected points to prevent clustering</li>
 <li>Balances image content importance with blue noise spatial distribution</li>
 </ol>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Python</a></li></ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 
@@ -161,10 +170,10 @@ Image size: 1488x1984 pixels</code></pre>
 </div>
 </section>
 <section id="preparing-the-working-image" class="level2">
-<h2>Preparing the Working Image</h2>
+<h2 class="anchored" data-anchor-id="preparing-the-working-image">Preparing the Working Image</h2>
 <p>Before generating the stippling pattern, we prepare the image by resizing if necessary and computing the importance map.</p>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Python</a></li></ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div id="prep-image" class="cell" data-message="false" data-execution_count="4">
@@ -179,10 +188,10 @@ Importance map computed</code></pre>
 </div>
 </section>
 <section id="generating-the-stippled-image" class="level2">
-<h2>Generating the Stippled Image</h2>
+<h2 class="anchored" data-anchor-id="generating-the-stippled-image">Generating the Stippled Image</h2>
 <p>Now let’s apply the stippling algorithm to create the blue noise stippling pattern.</p>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">Python</a></li></ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div id="generate-stipple" class="cell" data-message="false" data-execution_count="5">
@@ -197,17 +206,17 @@ Stipple pattern shape: (384, 512)</code></pre>
 </div>
 </section>
 <section id="displaying-the-results" class="level2">
-<h2>Displaying the Results</h2>
+<h2 class="anchored" data-anchor-id="displaying-the-results">Displaying the Results</h2>
 <p>Let’s visualize the original image, the importance map, and the stippled version side by side for comparison.</p>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">Python</a></li></ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div id="cell-display-results" class="cell" data-fig-height="4" data-fig-width="7" data-execution_count="6">
 <div class="cell-output cell-output-display">
-<div id="display-results" class="quarto-figure quarto-figure-center">
-<figure>
-<p><img src="index_files/figure-html/display-results-output-1.png" width="666" height="201" /></p>
+<div id="display-results" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/display-results-output-1.png" width="666" height="201" class="figure-img"></p>
 <figcaption>Comparison of original image, importance map, and blue noise stippling</figcaption>
 </figure>
 </div>
@@ -218,10 +227,10 @@ Stipple pattern shape: (384, 512)</code></pre>
 </div>
 </section>
 <section id="progressive-stippling-animation" class="level2">
-<h2>Progressive Stippling Animation</h2>
+<h2 class="anchored" data-anchor-id="progressive-stippling-animation">Progressive Stippling Animation</h2>
 <p>This section creates a GIF showing how the stippled image looks as more points are added sequentially. We’ll use the already-computed stippling points to generate frames at increments of 100 points.</p>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">Python</a></li></ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <div id="progressive-stippling" class="cell" data-message="false" data-execution_count="7">
@@ -236,8 +245,8 @@ Point counts: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200,
 </div>
 </div>
 <p>Now let’s create the GIF animation:</p>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true">Python</a></li></ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
 
@@ -245,16 +254,16 @@ Point counts: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200,
 </div>
 </div>
 <div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img src="progressive_stippling.gif" class="img-fluid" /></p>
+<figure class="figure">
+<p><img src="progressive_stippling.gif" class="img-fluid figure-img"></p>
 <figcaption>Progressive stippling animation showing the sequential build-up of points. Each frame represents an increment of 100 points, demonstrating how the blue noise stippling pattern develops as more points are added.</figcaption>
 </figure>
 </div>
 </section>
 <section id="challenge-requirements-1" class="level2">
-<h2>Challenge Requirements 📋</h2>
+<h2 class="anchored" data-anchor-id="challenge-requirements-1">Challenge Requirements 📋</h2>
 <section id="your-task" class="level3">
-<h3>Your Task</h3>
+<h3 class="anchored" data-anchor-id="your-task">Your Task</h3>
 <p><strong>Part 1 (This Challenge):</strong> Reproduce the blue noise stippling process to create:</p>
 <ol type="1">
 <li><strong>A stippled version of your chosen image</strong> - Use the algorithm demonstrated above to create a stippled version of an image of your choice</li>
@@ -268,7 +277,7 @@ Point counts: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200,
 <p><strong>Part 2 (November 18th):</strong> We’ll use your stippled images to create a statistical meme about selection bias and missing data. More details will be provided in Part 2.</p>
 </section>
 <section id="minimum-requirements-for-any-points" class="level3">
-<h3>Minimum Requirements for Any Points</h3>
+<h3 class="anchored" data-anchor-id="minimum-requirements-for-any-points">Minimum Requirements for Any Points</h3>
 <ol type="1">
 <li><p><strong>Fork and Clone Repository:</strong> Use the starter repository (if provided) or create your own GitHub repository for this challenge</p></li>
 <li><p><strong>Reproduce the Stippling Process:</strong></p>
@@ -293,7 +302,7 @@ Point counts: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200,
 </ol>
 </section>
 <section id="grading-rubric" class="level3">
-<h3>Grading Rubric 🎓</h3>
+<h3 class="anchored" data-anchor-id="grading-rubric">Grading Rubric 🎓</h3>
 <p><strong>75% Grade Requirements:</strong> - Successfully reproduce the stippling algorithm - Create a stippled image and progressive GIF - Basic GitHub Pages site with images and captions</p>
 <p><strong>85% Grade Requirements:</strong> - All of the above, plus: - Clear explanation of how blue noise stippling works - Discussion of why the algorithm creates aesthetically pleasing patterns - Professional presentation of results</p>
 <p><strong>95% Grade Requirements:</strong> - All of the above, plus: - Experimentation with different parameters (percentage, sigma, etc.) - Discussion of how parameter choices affect the final result - Comparison of different parameter settings</p>
@@ -301,18 +310,18 @@ Point counts: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200,
 </section>
 </section>
 <section id="getting-started-tips" class="level2">
-<h2>Getting Started Tips 🚀</h2>
+<h2 class="anchored" data-anchor-id="getting-started-tips">Getting Started Tips 🚀</h2>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class='callout-icon'></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>🎯 Navy SEALs Motto
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<blockquote>
+<blockquote class="blockquote">
 <p>“Slow is Smooth and Smooth is Fast”</p>
 </blockquote>
 <p><em>Take your time to understand the stippling algorithm, plan your approach carefully, and execute with precision. Rushing through this challenge will only lead to errors and confusion.</em></p>
@@ -321,7 +330,7 @@ Point counts: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200,
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class='callout-icon'></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Warning</span>💾 Important: Save Your Work Frequently!
@@ -335,49 +344,49 @@ Point counts: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200,
 </div>
 </section>
 <section id="submission-checklist" class="level2">
-<h2>Submission Checklist ✅</h2>
+<h2 class="anchored" data-anchor-id="submission-checklist">Submission Checklist ✅</h2>
 <p><strong>Minimum Requirements (Required for Any Points):</strong></p>
 <ul class="task-list">
-<li><label><input type="checkbox" />Forked/cloned repository for this challenge</label></li>
-<li><label><input type="checkbox" />Implemented blue noise stippling algorithm</label></li>
-<li><label><input type="checkbox" />Created stippled version of your image</label></li>
-<li><label><input type="checkbox" />Generated progressive stippling GIF animation</label></li>
-<li><label><input type="checkbox" />Created GitHub Pages site</label></li>
-<li><label><input type="checkbox" />Posted stippled image with caption</label></li>
-<li><label><input type="checkbox" />Posted progressive GIF with caption</label></li>
-<li><label><input type="checkbox" />Added brief explanation of blue noise stippling</label></li>
+<li><label><input type="checkbox">Forked/cloned repository for this challenge</label></li>
+<li><label><input type="checkbox">Implemented blue noise stippling algorithm</label></li>
+<li><label><input type="checkbox">Created stippled version of your image</label></li>
+<li><label><input type="checkbox">Generated progressive stippling GIF animation</label></li>
+<li><label><input type="checkbox">Created GitHub Pages site</label></li>
+<li><label><input type="checkbox">Posted stippled image with caption</label></li>
+<li><label><input type="checkbox">Posted progressive GIF with caption</label></li>
+<li><label><input type="checkbox">Added brief explanation of blue noise stippling</label></li>
 </ul>
 <p><strong>75% Grade Requirements:</strong></p>
 <ul class="task-list">
-<li><label><input type="checkbox" />All minimum requirements met</label></li>
-<li><label><input type="checkbox" />Code is well-organized and readable</label></li>
-<li><label><input type="checkbox" />GitHub Pages site is functional</label></li>
+<li><label><input type="checkbox">All minimum requirements met</label></li>
+<li><label><input type="checkbox">Code is well-organized and readable</label></li>
+<li><label><input type="checkbox">GitHub Pages site is functional</label></li>
 </ul>
 <p><strong>85% Grade Requirements:</strong></p>
 <ul class="task-list">
-<li><label><input type="checkbox" />All 75% requirements met</label></li>
-<li><label><input type="checkbox" />Clear explanation of how blue noise stippling works</label></li>
-<li><label><input type="checkbox" />Discussion of why the algorithm creates aesthetically pleasing patterns</label></li>
+<li><label><input type="checkbox">All 75% requirements met</label></li>
+<li><label><input type="checkbox">Clear explanation of how blue noise stippling works</label></li>
+<li><label><input type="checkbox">Discussion of why the algorithm creates aesthetically pleasing patterns</label></li>
 </ul>
 <p><strong>95% Grade Requirements:</strong></p>
 <ul class="task-list">
-<li><label><input type="checkbox" />All 85% requirements met</label></li>
-<li><label><input type="checkbox" />Experimentation with different parameters</label></li>
-<li><label><input type="checkbox" />Discussion of parameter effects</label></li>
+<li><label><input type="checkbox">All 85% requirements met</label></li>
+<li><label><input type="checkbox">Experimentation with different parameters</label></li>
+<li><label><input type="checkbox">Discussion of parameter effects</label></li>
 </ul>
 <p><strong>100% Grade Requirements:</strong></p>
 <ul class="task-list">
-<li><label><input type="checkbox" />All 95% requirements met</label></li>
-<li><label><input type="checkbox" />Exceptional presentation and documentation</label></li>
-<li><label><input type="checkbox" />Creative use of the stippling technique</label></li>
-<li><label><input type="checkbox" />Professional-quality GitHub Pages site</label></li>
+<li><label><input type="checkbox">All 95% requirements met</label></li>
+<li><label><input type="checkbox">Exceptional presentation and documentation</label></li>
+<li><label><input type="checkbox">Creative use of the stippling technique</label></li>
+<li><label><input type="checkbox">Professional-quality GitHub Pages site</label></li>
 </ul>
 </section>
 </section>
 
 </main>
 <!-- /main column -->
-<script id = "quarto-html-after-body" type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -778,6 +787,7 @@ Point counts: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200,
   </script>
 </div> <!-- /content -->
 
-</body>
 
-</html>
+
+
+</body></html>
