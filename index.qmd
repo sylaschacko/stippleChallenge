@@ -428,6 +428,8 @@ plt.tight_layout()
 plt.show()
 ```
 
+From the left to the right we have the original picture in grayscale, the importance map and the final blue noise stippling. The importance map shows the lighter areas as higher importance in the image. It tells the algorithm where to place more dots so the stippled image can keep the pertinant shapes and shading from the original picture.
+
 
 :::
 
@@ -527,6 +529,12 @@ print(f"Point counts: {point_counts}")
 :::
 
 ![Progressive stippling animation showing the sequential build-up of points. Each frame represents an increment of 100 points, demonstrating how the blue noise stippling pattern develops as more points are added.](progressive_stippling.gif)
+
+This animation shows each frame which adds more points, and the random-looking dots slowly come together until the original photo is clearly recognizable.
+
+### Brief explanation of blue noise stippling (for your page text)
+
+Blue noise stippling turns an image into a field of small dots that are evenly spaced but still look random. The algorithm first builds an importance map so darker and mid-tone areas get more dots than very light areas, which helps keep the main shapes and shading from the original photo. At the same time, a repulsion step pushes dots away from each other so they do not form clumps, grids, or visible patterns. Our eyes like this mix of structure and randomness, so the result looks clean and textured while still reading clearly as the original image.
 
 ## Challenge Requirements 📋
 
