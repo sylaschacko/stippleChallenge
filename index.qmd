@@ -59,7 +59,7 @@ First, let's load an image that we'll convert to a blue noise stippling pattern.
 
 ```{python}
 #| label: load-image
-#| echo: true
+#| echo: false
 #| fig-cap: "Original image before stippling"
 
 import numpy as np
@@ -106,7 +106,7 @@ Before applying the stippling algorithm, we create an **importance map** that id
 
 ```{python}
 #| label: importance-map
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 
@@ -204,7 +204,7 @@ The stippling algorithm uses a modified void-and-cluster approach that:
 
 ```{python}
 #| label: stippling-functions
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 
@@ -319,7 +319,7 @@ Before generating the stippling pattern, we prepare the image by resizing if nec
 
 ```{python}
 #| label: prep-image
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 
@@ -369,7 +369,7 @@ Now let's apply the stippling algorithm to create the blue noise stippling patte
 
 ```{python}
 #| label: generate-stipple
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 
@@ -401,7 +401,7 @@ Let's visualize the original image, the importance map, and the stippled version
 
 ```{python}
 #| label: display-results
-#| echo: true
+#| echo: false
 #| fig-cap: "Comparison of original image, importance map, and blue noise stippling"
 #| fig-width: 7
 #| fig-height: 4
@@ -440,7 +440,7 @@ This section creates a GIF showing how the stippled image looks as more points a
 
 ```{python}
 #| label: progressive-stippling
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 
